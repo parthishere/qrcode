@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title_block %}Completed{% endblock %}
+
+
+
+{% block body_block %}
+<h1> Completed </h1>
+{% for obj in objects_list %}
+
+<ul>
+    <li>{{ obj.name }}  {{ obj.email }} {{ obj.phone_number}}</li>
+</ul>
+
+{% endfor %}
+{% endblock %}
