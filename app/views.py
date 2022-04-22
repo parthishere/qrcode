@@ -26,7 +26,7 @@ def send_email(request):
     for p in participant:
         template = render_to_string('app/email_template.html', {'name': p.name, 'email':p.email, 'phone_number':p.phone_number})
         print(p)
-        subject = "Thanks for registering in Farewell 2k22 !"
+        subject = "Invitation for Farewell 2k22 !"
         message = template
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [p.email,]
