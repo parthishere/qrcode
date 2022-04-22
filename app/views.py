@@ -17,6 +17,8 @@ from django.core.mail import EmailMessage
 def qrscan(request):
     return render(request, 'app/qrscan.html', {})
 
+def home(request):
+    return render(request, 'app/index.html', {})
 
 def send_email(request):
     participant = [e for e in PassModel.objects.all()]

@@ -26,7 +26,7 @@ class QrRecognize():
         slug = None
                 
         ret, self.frame = self.video.read()
-        self.frame = cv2.flip(self.frame,1)
+        # self.frame = cv2.flip(self.frame,1)
         for barcode in decode(self.frame):
             self.data = barcode.data.decode('utf-8')
             pts = np.array([barcode.polygon], np.int32)
@@ -37,6 +37,10 @@ class QrRecognize():
             except:
                 pass
                 print("will not recognize")
+                self.data = "Not Recognized"
+                cv2.polylines(self.frame, [pts], True, (0, 0, 255), 5)
+                pts2 = barcode.rect
+                cv2.putText(self.frame, self.data, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 1)
             
             try:
                 q = PassModel.objects.filter(name=name, email=email, phone_number=phone_number, slug=slug)
@@ -50,7 +54,7 @@ class QrRecognize():
                     if query.recognized:
                         cv2.polylines(self.frame, [pts], True, (0, 0, 255), 5)
                         
-                        cv2.putText(self.frame, "Scanned Again", (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
+                        cv2.putText(self.frame, "Scanned Again", (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
                     else:
                         cv2.polylines(self.frame, [pts], True, (0, 255, 0), 5)
 
