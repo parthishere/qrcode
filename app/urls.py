@@ -5,6 +5,7 @@ from .views import qrscan, send_email, cam_feed, pati_gayela, bachya_khutya
 app_name = "app"
 
 urlpatterns = [
+    path('', home, name='home'),
     path('scan', qrscan, name='scan'),
     path('email', send_email, name='send-email'),
     path('stream', cam_feed, name='stream'),
