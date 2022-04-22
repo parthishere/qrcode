@@ -8,20 +8,31 @@ from django.core.mail import send_mail
 from .recog import QrRecognize
 from .models import PassModel
 
+from django.conf import settings
+from django.template.loader import render_to_string
+
+from django.core.mail import EmailMessage
+
 # Create your views here.
 def qrscan(request):
     return render(request, 'app/qrscan.html', {})
 
-def send_email(request):
 
-    send_mail(
-    subject = 'Test Mail',
-    message = 'Kindly Ignore',
-    from_email = 'noreply@gmail.com',
-    recipient_list = ['parthishere1234@gmail.com',],
-    fail_silently = False,
-    )
-    return redirect('app:complete')
+def send_email(request):
+    participant = [e for e in PassModel.objects.all()]
+    print(participant)
+    for p in participant:
+        template = render_to_string('app/email_template.html', {'name': p.name, 'email':p.email, 'phone_number':p.phone_number})
+        print(p)
+        subject = "Thanks for registering in Farewell 2k22 !"
+        message = template
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [p.email,]
+        mail = EmailMessage(subject, message, email_from, recipient_list)
+        mail.attach(p.qr.name, p.qr.read())
+        mail.send()
+
+    return render(request, 'app/sent.html', {})
 
 def pati_gayela(request):
     context = {}

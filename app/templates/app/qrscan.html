@@ -4,6 +4,9 @@
 
 
 {% block body_block %}
-Hii
+<br>
+<hr>
 <img src="{% url 'app:stream' %}" >
+<hr>
+<a href="{% url 'app:complete' %}"><button class='btn btn-dark' > Return completed </button></a>
 {% endblock %}
