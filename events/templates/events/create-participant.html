@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<form method="POST" action="{% url 'events:add-participant' pk=pk %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="submit" name="submit">
+</form>
+{% endblock %}

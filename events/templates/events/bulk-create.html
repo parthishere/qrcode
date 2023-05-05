@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+
+<form method="POST" action="{% url 'events:add-bulk-participant' pk=idpk %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input class="btn btn-primary" type="submit" value="submit" name="submit">
+</form>
+{% endblock %}

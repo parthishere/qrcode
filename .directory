@@ -1,0 +1,10 @@
+[Dolphin]
+SortHiddenLast=true
+SortOrder=1
+SortRole=modificationtime
+Timestamp=2023,5,5,16,2,34.824
+Version=4
+VisibleRoles=Icons_text,Icons_size,Icons_modificationtime
+
+[Settings]
+HiddenFilesShown=true

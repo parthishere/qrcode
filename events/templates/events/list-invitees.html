@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<br>
+<a href="{% url 'events:add-participant' pk=event_detail.pk %}"><button class="btn btn-secondary">Add User</button></a>
+    <a href="{% url "events:update" pk=event_detail.pk %}"> <button>Update Event</button></a>
+    <a href="{% url "events:delete" pk=event_detail.pk %}"> <button>Delete Event</button></a>
+    <a href="{% url "events:detail" pk=event_detail.pk %}"> <button>See All Ivitees of Event</button></a>
+    <a href="{% url "events:see-all-unreconized-participant" pk=event_detail.pk %}"> <button>See Unrecognized Ivitees of Event</button></a>
+    <br>
+    <br>
+    <center>
+    <a href="{% url 'app:scan' pk=event_detail.pk %}"><button class="btn btn-primary">Scan</button></a>
+    </center>
+    <br>
+    <br>
+    <hr>
+
+<b>unique_id : </b>{{ event_detail.unique_id }}<br>
+<b>created_by : </b>{{ event_detail.created_by }}<br>
+<b>moderators list :</b><br>
+<ui>
+{% for m in event_detail.moderators.all %}
+<li>{{ m.username }}</li>
+{% endfor %}
+</ul>
+<br>
+<b>Event name: </b>{{ event_detail.event_name }}<br>
+<b>Event Date: </b>{{ event_detail.event_date }}<br>
+<b>contact number: </b>{{ event_detail.contact_number }}<br>
+<b>contact email: </b>{{ event_detail.contact_email }}<br>
+<b>contact number 2: </b>{{ event_detail.contact_number_2 }}<br>
+<b>contact email 2: </b>{{ event_detail.contact_email_2 }}<br>
+<b>instance created date: </b>{{ event_detail.instance_created_date }}<br>
+<b>updated date: </b>{{ event_detail.updated_date }}<br>
+<b>Invitees list :</b><br>
+<ol>
+{% for i in event_detail.recognized_invitees.all %}
+<li>{{ i.name }} - {{ i.email }} - {{ i.unique_id }} &nbsp&nbsp <a href="{% url 'events:delete-participant' pk=event_detail.pk unique_id=i.unique_id %}">X</a></li> 
+{% endfor %}
+</ol>
+<b>fast check: </b>{{ event_detail.fast_check }}<br>
+<b>pre_define_pass: </b>{{ event_detail.pre_define_pass }}<br>
+<b>predefined pass image: </b><img href={{ event_detail.predefined_pass_image }}><br>
+{% if not request.user.is_pro %} <b>event update count: </b>{{ event_detail.event_update_count }}<br></h6> {% endif %}
+
+
+
+
+scan
+{% endblock %}

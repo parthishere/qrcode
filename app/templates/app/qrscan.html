@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block body_block %}
+
+    <div class="col s4">
+        {% comment %} <div class="collection">
+            <a href="{% url 'image' %}" class="collection-item">Simple Face Detection</a>
+            <a href="{% url 'app:scan' pk=event_id  %}" class="collection-item active">Live Face Detection</a>
+        </div> {% endcomment %}
+        <button type="button" class="btn btn-dark" id="start-stream" style="margin-bottom: 10px">Start Detection
+        </button>
+        <button type="button" class="btn btn-danger" id="stop-stream" style="margin-bottom: 10px">Stop Detection
+        </button>
+        <a href="{% url "events:see-all-reconized-participant" pk=event_id %}"> <button>See Recognized Ivitees of Event</button></a>
+        <a href="{% url "events:see-all-unreconized-participant" pk=event_id %}"> <button>See Unrecognized Ivitees of Event</button></a>
+        <a href="{% url "events:detail" pk=event_id %}"> <button>Back to Event</button></a>
+    </div>
+    <div class="col s6">
+        <div class="card">
+            <div class="card-content center-align">
+                <h4 class="center"><u>Live Video</u></h4>
+                <video id="video" width="600" height="450" autoplay style="display:none"></video>
+                <canvas id="canvas" width="400" height="350" class="hide" style="display:none"></canvas>
+                {% comment %} <button type="button" class="btn" id="start-stream" style="margin-bottom: 10px">Start Face Detection
+                </button> {% endcomment %}
+                <canvas id="detect-data" width="600" height="450"></canvas>
+            </div>
+        </div>
+    </div>
+
+    {{ event_id|json_script:"event-id" }}
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript" src="{% static 'app/js/jquery.min.js' %}"></script>
+    <script type="text/javascript">
+        const event_id = JSON.parse(document.getElementById('event-id').textContent);
+        var socket = new WebSocket('ws://127.0.0.1:8888/websocket');
+
+        $(document).ready(function () {
+            let video = document.getElementById('video');
+            let canvas = document.getElementById('canvas');
+            let context = canvas.getContext('2d');
+            let draw_canvas = document.getElementById('detect-data');
+            let draw_context = draw_canvas.getContext('2d');
+            let image = new Image();
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({video: true}).then(function (stream) {
+                    video.srcObject = stream;
+                    video.play();
+                });
+            }
+
+            function drawCanvas() {
+                context.drawImage(video, 0, 0, 600, 450);
+                sendMessage(JSON.stringify({"message":canvas.toDataURL('image/png'), "event_id":event_id}));
+                
+            }
+
+            document.getElementById("start-stream").addEventListener("click", function () {
+                drawCanvas();
+            });
+            document.getElementById("stop-stream").addEventListener("click", function () {
+                socket.close();
+                $.ajax({
+                    success: function(html){
+                                location.reload();
+                            }
+                });
+                
+            });
+
+            function sendMessage(message) {
+                socket.send(message);
+            }
+            socket.onmessage = function (e) {
+                event_data = JSON.parse(e.data)
+                // console.log(event_data['image'])
+                image.onload = function () {
+                    draw_context.drawImage(image, 0, 0, 600, 450);
+                };
+                image.src = event_data['image'];
+                //console.log(image.src)
+                drawCanvas();
+            };
+            
+        })
+    </script>
+{% endblock %}

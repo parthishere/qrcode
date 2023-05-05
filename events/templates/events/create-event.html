@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block body_block %}
+<div class="container-fluid">
+<form method="POST" action="{% url 'events:create' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" class="btn btn-info" value="submit" name="submit">
+</form>
+</div>
+{% endblock %}
