@@ -104,11 +104,16 @@ WSGI_APPLICATION = 'qrwebsite.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ["POSTGRES_DB"],
+        "USER": os.environ["POSTGRES_USER"],
+        "PASSWORD": os.environ["POSTGRES_PASSWORD"],
+        "HOST": "db",  # set in docker-compose.yml
+        "PORT": 5432,  # default postgres port
     }
 }
+
 
 
 # Password validation
@@ -200,10 +205,10 @@ MAX_FREE_UPDATE_EVENTS = 10
 AUTH_USER_MODEL = 'customuser.CustomUser'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
 
-# CELERY_BROKER_URL = os.environ["REDIS_URL"]
-# CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_BROKER_URL = os.environ["REDIS_URL"]
+CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
+# CELERY_BROKER_URL = 'redis://localhost:6379/0'
+# CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'

@@ -3,7 +3,7 @@ from enum import unique
 from django.shortcuts import reverse
 from django.db import models
 from django.contrib.auth import get_user_model
-
+from django.utils.timezone import now
 User = get_user_model()
 from django.db.models.signals import pre_save, post_save
 
@@ -36,7 +36,7 @@ class Event(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     moderators = models.ManyToManyField(User, blank=True, related_name="events_as_moderator")
     event_name = models.CharField(max_length=100)
-    event_date = models.DateTimeField(default=datetime.now())
+    event_date = models.DateTimeField(default=now)
     venue = models.CharField(max_length=120, null=True)
     about = models.TextField(null=True)
     contact_number = models.IntegerField(default="999999999")

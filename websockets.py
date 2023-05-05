@@ -96,12 +96,7 @@ async def detectImage(image, event_id):
         q = await _get_invites(email=qr_email, unique_id=qr_unique_id, event=og_event)
         
         q_in_event_exists = True if q.event == og_event else False 
-        print("q exists")
-        print(q_in_event_exists)
-        print("event_id")
-        print(event_id)
-        print("event_primary_key")
-        print(qr_event_primary_key)
+ 
         q_already_scaned = q in og_event.recognized_invitees.all()
         if q_in_event_exists and event_id == qr_event_primary_key:                
             pts2 = barcode.rect
