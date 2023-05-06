@@ -76,30 +76,28 @@
             socket.onmessage = function (e) {
                 event_data = JSON.parse(e.data)
                 // console.log(event_data['image'])
+                image.src = event_data['image'];
                 image.onload = function () {
                     draw_context.drawImage(image, 0, 0, 600, 450);
                 };
-                image.src = event_data['image'];
-                //console.log(image.src)
+                
                 
                 
                 context.drawImage(video, 0, 0, 600, 450);
 
                 
-
-
-                sendMessage(JSON.stringify({"message":canvas.toDataURL('image/png'), "event_id":event_id}));
                 try{
-                    if (event_data["message"]["code"] == "1001" && image.src == event_data['image']){
-                        // alert(message["message"])
+                    if (event_data?.message?.code == "1001"){
                         
-                        console.log(event_data["message"]);
-                        alert("name: "+event_data["message"]["message"]["qrcode"] + " email: " + event_data["message"]["message"]["qr_email"]+ " event key: " + event_data["message"]["message"]["event_pk"]);
+
+                         alert("name: "+event_data["message"]["message"]["qrcode"] + " email: " + event_data["message"]["message"]["qr_email"]+ " event key: " + event_data["message"]["message"]["event_pk"]);
                     }
                 }
                 catch{
                     
                 }
+                sendMessage(JSON.stringify({"message":canvas.toDataURL('image/png'), "event_id":event_id}));
+
             };
             
         })
