@@ -115,7 +115,7 @@ async def detectImage(image, event_id):
                     
                     # await _save_invitee(q, og_event)
                     
-                    message = {"message": [qr_name, qr_email, qr_phone_number, og_event, qr_unique_id], "code": "1001" }
+                    message = {"message": {"qrcode":qr_name, "qr_email":qr_email, "qr_phone_number":qr_phone_number, "event_pk":og_event.pk, "qr_unique_id":qr_unique_id}, "code": "1001" }
             else:
                 data = "User does not exists in the event"
                 message = {"message": "User does not exists in the event", "code": "1002"}

@@ -36,7 +36,7 @@
     <script type="text/javascript">
         const event_id = JSON.parse(document.getElementById('event-id').textContent);
         var socket = new WebSocket('ws://127.0.0.1:8888/websocket');
-
+       
         $(document).ready(function () {
             let video = document.getElementById('video');
             let canvas = document.getElementById('canvas');
@@ -81,10 +81,17 @@
                 };
                 image.src = event_data['image'];
                 //console.log(image.src)
-                if (event_data["message"]["code"] == "1002"){
-                    // alert(message["message"])
-                    console.log(event_data["message"]);
-                    alert();
+                
+                try{
+                    if (event_data["message"]["code"] == "1001"){
+                        // alert(message["message"])
+                        
+                        console.log(event_data["message"]);
+                        alert("name: "+event_data["message"]["qrcode"] + " email" + event_data["message"]["email"]);
+                    }
+                }
+                catch{
+                    
                 }
                 drawCanvas();
             };
