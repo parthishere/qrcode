@@ -113,7 +113,7 @@ async def detectImage(image, event_id):
 
                     cv2.putText(frame, data, (pts2[0], pts2[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
                     
-                    # await _save_invitee(q, og_event)
+                    await _save_invitee(q, og_event)
                     
                     message = {"message": {"qrcode":qr_name, "qr_email":qr_email, "qr_phone_number":qr_phone_number, "event_pk":og_event.pk, "qr_unique_id":qr_unique_id}, "code": "1001" }
             else:

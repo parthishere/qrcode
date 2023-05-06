@@ -11,9 +11,9 @@
         </button>
         <button type="button" class="btn btn-danger" id="stop-stream" style="margin-bottom: 10px">Stop Detection
         </button>
-        <a href="{% url "events:see-all-reconized-participant" pk=event_id %}"> <button class="btn btn-dark btn-sm">See Recognized Ivitees of Event</button></a>
-        <a href="{% url "events:see-all-unreconized-participant" pk=event_id %}"> <button class="btn btn-dark btn-sm">See Unrecognized Ivitees of Event</button></a>
-        <a href="{% url "events:detail" pk=event_id %}"> <button class="btn btn-dark btn-sm">Back to Event</button></a>
+        <a href="{% url 'events:see-all-reconized-participant' pk=event_id %}"> <button class="btn btn-dark btn-sm">See Recognized Ivitees of Event</button></a>
+        <a href="{% url 'events:see-all-unreconized-participant' pk=event_id %}"> <button class="btn btn-dark btn-sm">See Unrecognized Ivitees of Event</button></a>
+        <a href="{% url 'events:detail' pk=event_id %}"> <button class="btn btn-dark btn-sm">Back to Event</button></a>
     </div>
     <div class="col s6">
         <div class="card">
@@ -36,7 +36,7 @@
     <script type="text/javascript">
         const event_id = JSON.parse(document.getElementById('event-id').textContent);
         var socket = new WebSocket('ws://127.0.0.1:8888/websocket');
-       
+        
         $(document).ready(function () {
             let video = document.getElementById('video');
             let canvas = document.getElementById('canvas');
@@ -82,18 +82,24 @@
                 image.src = event_data['image'];
                 //console.log(image.src)
                 
+                
+                context.drawImage(video, 0, 0, 600, 450);
+
+                
+
+
+                sendMessage(JSON.stringify({"message":canvas.toDataURL('image/png'), "event_id":event_id}));
                 try{
-                    if (event_data["message"]["code"] == "1001"){
+                    if (event_data["message"]["code"] == "1001" && image.src == event_data['image']){
                         // alert(message["message"])
                         
                         console.log(event_data["message"]);
-                        alert("name: "+event_data["message"]["qrcode"] + " email" + event_data["message"]["email"]);
+                        alert("name: "+event_data["message"]["message"]["qrcode"] + " email: " + event_data["message"]["message"]["qr_email"]+ " event key: " + event_data["message"]["message"]["event_pk"]);
                     }
                 }
                 catch{
                     
                 }
-                drawCanvas();
             };
             
         })
