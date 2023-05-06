@@ -25,13 +25,13 @@ def home(request):
     return render(request, 'app/home.html', {})
 
 def send_email_to_event(request, pk):
-    # if request.GET.get("remaining"):
-    # send_email_to_remaining(None, request, pk)
-    # else:
-
-    
+   
     send_email_to_all(None, request, pk)
-    return render(request, "app/will_send_email_in_background.html", {})
+    return render(request, "app/will_send_email_in_background.html", {"pk":pk})
+
+def send_email_to_remaining_event(request, pk):
+    send_email_to_remaining(None, request, pk)
+    return render(request, "app/will_send_email_in_background.html", {"pk":pk})
         
         
 def send_email(request, pk=None):

@@ -1,18 +1,21 @@
-import tempfile
+from PIL import Image
+from io import BytesIO
 import string
 import random
 from events.models import Event
 from celery import shared_task
 from django.template.loader import render_to_string
 
-from django.core.mail import EmailMessage, send_mail
+from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
+from django.core import mail
 from django.conf import settings
 
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-from django.contrib.contenttypes.models import ContentType
+from mimetypes import guess_type
+from os.path import basename
 
 @shared_task
 def send_email_to_all(extra_fields, request, event_pk):
@@ -20,9 +23,10 @@ def send_email_to_all(extra_fields, request, event_pk):
     user = request.user
     event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=event_pk, created_by=user)
     
-   
+    # connection = mail.get_connection()
+    # connection.open()
     invitees = [i for i in event_instance.invitees.all()]        
-        
+    all_mail = []  
     for invitee in invitees :
         invitee.save()
         if invitee.qr_code:
@@ -34,24 +38,22 @@ def send_email_to_all(extra_fields, request, event_pk):
             email_from = settings.EMAIL_HOST_USER
             recipient_list = [invitee.email]
        
-            image_file = invitee.qr_code
+            image = invitee.qr_code
+    
+            
+            image.open()
 
-           
-
-            mail = EmailMessage(subject, message, email_from, recipient_list)
-            mail.attach("image.png", image_file.read(), "image/jpg")
-        
-            mail.send()
-            print("email sent")
+            # email = EmailMessage("sub", "pub", "thakkar.parth782@gmail.com", ["parthishere1234@gmail.com"])
+            email = EmailMessage(subject, message, email_from, recipient_list,)
+            email.attach(basename(image.name),image.read(), guess_type(image.name)[0])
+            email.send(fail_silently=False)
+            all_mail.append(email)
+            image.close()
+            
        
-    # group_name = get_user_name()  # Find out way to get same as what is printed on connect()
-
-    # channel_layer = get_channel_layer()
-    # # Trigger reload message sent to group
-    # async_to_sync(channel_layer.group_send)(
-    #     group_name,
-    #     {'type': 'reload_page'}
-    # )
+  
+    # connection.send_messages(all_mail)
+    # connection.close()
     return None
         
     

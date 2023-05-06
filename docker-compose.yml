@@ -42,7 +42,9 @@ services:
       - "8000:8000"
     depends_on:
       - db
-      - redis       
+      - redis   
+      - websocket
+      - celeryworker     
 
 
   celeryworker:
@@ -54,6 +56,17 @@ services:
       - db
     ports: []
     command: celery -A qrwebsite worker -l INFO -E
+  
+
+  websocket:
+    build: .
+    command: python3 websockets.py
+    volumes:
+      - .:/django
+    ports:
+      - "8888:8888"
+    depends_on:
+      - db
 
 
 

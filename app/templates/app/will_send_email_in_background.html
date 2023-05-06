@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title_block %}Email Send{% endblock %}
+
+{% block body_block %}
+email will be sent in the background do not stop the server
+
+<a href="{% url "events:detail" pk=pk %}"> <button class="btn btn-dark btn-sm">Back to Event</button></a>
+
+
+{% endblock %}

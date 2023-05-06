@@ -8,13 +8,9 @@
     
 <a href="{% url 'events:add-bulk-participant' pk=event_detail.pk %}"><button class="btn btn-primary btn-sm">Add bulk Users</button></a>&nbsp<a href="{% url 'events:add-participant' pk=event_detail.pk %}"><button class="btn btn-primary btn-sm">Add User</button></a>
 {% comment %} <button class="button-64" role="button"><span class="text">Button 64</span></button> {% endcomment %}
-    <a href="{% url 'events:remove-all' pk=event_detail.pk%}"><button class="btn btn-danger btn-sm">Remove Invitees</button></a>
-    <a href="{% url "events:update" pk=event_detail.pk %}"> <button class="btn btn-primary btn-sm">Update Event</button></a>
-    <a href="{% url "events:delete" pk=event_detail.pk %}"> <button class="btn btn-dabder btn-sm">Delete Event</button></a>
-    <a href="{% url "events:see-all-reconized-participant" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">See Recognized Ivitees of Event</button></a>
-    <a href="{% url "events:see-all-unreconized-participant" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">See Unrecognized Ivitees of Event</button></a>
 
-    <a href="{% url "app:send-email" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">Email the participant</button></a>
+    <a href="{% url "events:see-all-reconized-participant" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">See Recognized Ivitees of Event</button></a>
+    <a href="{% url "events:detail" pk=event_detail.pk %}"> <button class="btn btn-dark btn-sm">Back to Event</button></a>
     <br>
     <br>
     <center>
@@ -24,6 +20,8 @@
     <br>
     <hr>
 </div>
+
+
 <div class="container">
 <b>Unique ID of Event : </b>{{ event_detail.unique_id }}<br>
 <b>Created by : </b>{{ event_detail.created_by }}<br>
@@ -36,12 +34,7 @@
 <br>
 <b>Event name: </b>{{ event_detail.event_name }}<br>
 <b>Event Date: </b>{{ event_detail.event_date }}<br>
-<b>Contact Number: </b>{{ event_detail.contact_number }}<br>
-<b>Contact Email: </b>{{ event_detail.contact_email }}<br>
-<b>Contact number: </b>{{ event_detail.contact_number_2 }}<br>
-<b>Secondary Contact email: </b>{{ event_detail.contact_email_2 }}<br>
-<b>Event Created Date: </b>{{ event_detail.instance_created_date }}<br>
-<b>Event Updated Date: </b>{{ event_detail.updated_date }}<br>
+
 <br>
 <b>Invitees list :</b><br>
 
@@ -62,7 +55,7 @@
           </tr>
         </thead>
         <tbody>
-            {% for i in event_detail.invitees.all %}
+            {% for i in event_detail.recognized_invitees.all %}
           <tr>
             <th scope="row">{{i.pk}}</th>
             <td>{{i.name}}</td>
@@ -81,22 +74,12 @@
 
 <div class="container">
       
-        
-      
-
-        {% comment %} <th>
-            {{ i.name }} - {{ i.email }} - {{ i.unique_id }} &nbsp&nbsp <a href="{% url 'events:delete-participant' pk=event_detail.pk unique_id=i.unique_id %}">X</a></li>
-        </th> {% endcomment %}
-
-
-
-
-
-
 
 {% if not request.user.is_pro %} <b>event update count: </b>{{ event_detail.event_update_count }}<br></h6> 
 
 {% endif %}
+
+
 </div>
 
 

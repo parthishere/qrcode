@@ -40,7 +40,7 @@ class Invitee(models.Model):
     name = models.CharField(max_length=100)
     unique_id = models.CharField(max_length=100, blank=True)
     email = models.EmailField()
-    phone_number = models.IntegerField()
+    phone_number = models.BigIntegerField()
     other_info = models.TextField()
     recognized = models.BooleanField(default=False)
     qr_code = models.ImageField(upload_to=f"media/invitees/", blank=True)

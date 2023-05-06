@@ -7,7 +7,7 @@ import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'qrwebsite.settings')
 
 
-app = Celery("qrwebsite.settings")
+app = Celery("qrwebsite")
 
 
 app.config_from_object('django.conf:settings', namespace='CELERY')

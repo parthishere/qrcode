@@ -9,7 +9,7 @@ WORKDIR /django
 COPY requirements.txt requirements.txt
 
 # Install the dependencies
-RUN pip install "setuptools<58.0.0" && pip install --no-cache-dir -r requirements.txt
+RUN apt-get update && apt-get install libgl1 ffmpeg libsm6 libxext6 zbar-tools  -y && pip install "setuptools<58.0.0" && pip install --no-cache-dir -r requirements.txt
 
 # Copy the source code to the container
 COPY . .

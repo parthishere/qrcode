@@ -11,9 +11,9 @@
         </button>
         <button type="button" class="btn btn-danger" id="stop-stream" style="margin-bottom: 10px">Stop Detection
         </button>
-        <a href="{% url "events:see-all-reconized-participant" pk=event_id %}"> <button>See Recognized Ivitees of Event</button></a>
-        <a href="{% url "events:see-all-unreconized-participant" pk=event_id %}"> <button>See Unrecognized Ivitees of Event</button></a>
-        <a href="{% url "events:detail" pk=event_id %}"> <button>Back to Event</button></a>
+        <a href="{% url "events:see-all-reconized-participant" pk=event_id %}"> <button class="btn btn-dark btn-sm">See Recognized Ivitees of Event</button></a>
+        <a href="{% url "events:see-all-unreconized-participant" pk=event_id %}"> <button class="btn btn-dark btn-sm">See Unrecognized Ivitees of Event</button></a>
+        <a href="{% url "events:detail" pk=event_id %}"> <button class="btn btn-dark btn-sm">Back to Event</button></a>
     </div>
     <div class="col s6">
         <div class="card">
@@ -81,6 +81,11 @@
                 };
                 image.src = event_data['image'];
                 //console.log(image.src)
+                if (event_data["message"]["code"] == "1002"){
+                    // alert(message["message"])
+                    console.log(event_data["message"]);
+                    alert();
+                }
                 drawCanvas();
             };
             

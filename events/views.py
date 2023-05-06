@@ -205,7 +205,10 @@ def delete_participant(request, unique_id=None, pk=None):
     
     if invitee in event_instance.invitees.all():
         event_instance.invitees.remove(invitee)
-    
+    try:
+        invitee.delete()
+    except:
+        pass
     event_instance.save()
     return redirect(event_instance.get_absolute_url)
 
@@ -221,7 +224,7 @@ def see_all_recognized_participant(request, pk=None):
     event_instance = Event.objects.select_related("created_by").prefetch_related("moderators", "invitees").exclude(removed=True).get(pk=pk, removed=False)
     context['event_detail'] = event_instance
     
-    return render(request, "events/list-invitees.html", context)
+    return render(request, "events/recognized.html", context)
 
 def see_all_unrecognized_participant(request, pk=None):
     context = {}
@@ -229,4 +232,4 @@ def see_all_unrecognized_participant(request, pk=None):
     
     context['event_detail'] = event_instance
     
-    return render(request, "events/list-invitees.html", context)
+    return render(request, "events/unrecognized.html", context)

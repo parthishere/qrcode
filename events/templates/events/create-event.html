@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block body_block %}
-<div class="container-fluid">
+<div class="container">
 <form method="POST" action="{% url 'events:create' %}">
     {% csrf_token %}
     {{ form.as_p }}

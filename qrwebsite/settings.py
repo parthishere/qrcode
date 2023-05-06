@@ -56,7 +56,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
     
-    'django_celery_results',
+    "django_celery_results",
+    'django_celery_beat',
     
     "accounts",
     'app',
@@ -204,6 +205,9 @@ MAX_FREE_UPDATE_EVENTS = 10
 
 AUTH_USER_MODEL = 'customuser.CustomUser'
 DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
+
+
+
 
 CELERY_BROKER_URL = os.environ["REDIS_URL"]
 CELERY_RESULT_BACKEND = os.environ["REDIS_URL"]
