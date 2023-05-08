@@ -3,6 +3,7 @@ from io import BytesIO
 import string
 import random
 from events.models import Event
+from qrwebsite.celery import app
 from celery import shared_task
 from django.template.loader import render_to_string
 
@@ -17,8 +18,10 @@ User = get_user_model()
 from mimetypes import guess_type
 from os.path import basename
 
-@shared_task
-def send_email_to_all(extra_fields, request, event_pk):
+
+
+@app.task(bind=True)
+def send_email_to_all(self,extra_fields, request, event_pk):
     print("heya in the task")
     user = request.user
     event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=event_pk, created_by=user)
@@ -57,8 +60,8 @@ def send_email_to_all(extra_fields, request, event_pk):
     return None
         
     
-@shared_task
-def send_email_to_remaining(extra_fields, request, event_pk):
+@app.task(bind=True)
+def send_email_to_remaining(self, extra_fields, request, event_pk):
     
     user = request.user
     event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=event_pk, created_by=user)

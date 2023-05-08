@@ -15,12 +15,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls ,name='admin'),
     path('accounts/', include('allauth.urls')),
+    
+    path('schema/', get_schema_view(
+        title="API",
+        description="API for the qr App",
+        version="1.0.0"
+    ), name="qr-schema"),
+    path('api/', include_docs_urls(
+        title="API",
+        description="API for the qr App",
+    ), name="qr-docs"),
+    
+    path('dj-rest-auth/', include('dj_rest_auth.urls')),
+    
+    path('', include('app.urls', namespace='app')),
+     
     path('events/', include('events.urls', namespace='events')),
     path('users/', include('accounts.urls', namespace='accounts')),
-    path('', include('app.urls', namespace='app')),
-
+    
+    path('api/', include('events.api.urls', namespace='events-api'))
 ]

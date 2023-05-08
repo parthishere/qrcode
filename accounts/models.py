@@ -33,6 +33,7 @@ def unique_id_generator(instance):
 
 # Create your models here.
 class Invitee(models.Model):
+    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="created_all_invitees")
     created_on = models.DateTimeField(auto_now=True)
     event = models.ForeignKey("events.Event", on_delete=models.CASCADE, related_name="event_invitees")

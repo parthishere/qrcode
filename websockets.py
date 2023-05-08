@@ -97,7 +97,7 @@ async def detectImage(image, event_id):
         
         q_in_event_exists = True if q.event == og_event else False 
 
-        q_already_scaned = q in og_event.recognized_invitees.all()
+        q_already_scaned = q.recognized
         
         try:
             if q_in_event_exists and int(event_id) == int(qr_event_primary_key):                
@@ -140,10 +140,7 @@ def _get_event(pk):
 
 @sync_to_async
 def _save_invitee(q, og_event):
-    q.recognized = True
-    q.save()
-    og_event.recognized_invitees.add(q)
-    og_event.save()
+    qr_unique_id
 
 @sync_to_async
 def _get_invites(email, unique_id, event):
