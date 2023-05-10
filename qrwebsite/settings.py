@@ -104,7 +104,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'qrwebsite.wsgi.application'
 
-
+ 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
@@ -234,4 +234,17 @@ CHANNEL_LAYERS = {
             # "hosts": [("redis", 6379)],
         },
     },
+}
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }
