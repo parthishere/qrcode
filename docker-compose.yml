@@ -55,7 +55,7 @@ services:
       - redis
       - db
     ports: []
-    command: celery -A qrwebsite worker -l INFO -E
+    command: celery -A qrwebsite worker --loglevel=info -P eventlet -E
   
 
   websocket:

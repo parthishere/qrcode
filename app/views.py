@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 
 from django.core.mail import EmailMessage
 
-from .tasks import send_email_to_all, send_email_to_remaining
+from events.tasks import send_email_to_all, send_email_to_remaining
 
 # Create your views here.
 def qrscan(request, pk=None):
@@ -35,26 +35,6 @@ def send_email_to_remaining_event(request, pk):
         
         
 def send_email(request, pk=None):
-    # user = request.user
-    # event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=pk, created_by=user)
-    
-    # invitees = event_instance.invitees.all()
-    # # print(participant)
-    
-    # for invitee in invitees :
-    #     if invitee.qr_code:
-    #         template = render_to_string('app/email_template.html', {'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
-    #         invitee.sent_email = True
-    #         invitee.save()
-    #         subject = "Initation for: " + event_instance.event_name
-    #         message = template
-    #         email_from = settings.EMAIL_HOST_USER
-    #         recipient_list = [invitee.email,]
-    #         mail = EmailMessage(subject, message, email_from, recipient_list)
-    #         mail.attach(invitee.qr_code.name, invitee.qr_code.read())
-    #         mail.send()
-    #     else:
-    #         return redirect(reverse("app:make-qr", kwargs={"pk":pk}))
 
     return render(request, 'app/sent.html', {"pk":pk})
 
