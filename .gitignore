@@ -2,4 +2,4 @@
 __pycache__/
 *.pyc
 dockerfile_not_docker
-docker-sompose.yml
+docker-compose.yml
