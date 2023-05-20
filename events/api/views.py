@@ -1,6 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView, CreateAPIView
 from rest_framework.views import APIView
+from rest_framework.decorators import api_view
 from ..models import Event
 from accounts.models import Invitee
 from .serializers import EventSerializer, BulkCreateSerializer, InviteeSerializer
@@ -9,6 +10,7 @@ import openpyxl
 import json
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
+from django.contrib.auth.decorators import login_required
 
 class EventListCreateAPI(ListCreateAPIView):
     queryset = Event.objects.all()
@@ -145,7 +147,9 @@ class delete_all_invitees(APIView):
         else:
             return Response({"data":"not same user", "error":1, "code":4000})
             
-            
+  
+@api_view(["POST"]) 
+@login_required         
 def scan(request, event_pk=None):
     """
     
@@ -178,21 +182,28 @@ def scan(request, event_pk=None):
         print("will not recognize")
         data = "Not valid QR"
         message = {"message": "not valid QR", "code": 1004}
+        return Response(message)
     
-    og_event = Event.objects.prefetch_related("recognized_invitees").get(pk=event_pk)
+    try:
+        og_event = Event.objects.prefetch_related("recognized_invitees").get(pk=event_pk, created_by=request.user)
+        
+        q = Invitee.objects.get(email=qr_email, unique_id=qr_unique_id, event=og_event)
+
+        q_in_event_exists = True if q.event == og_event else False 
+
+        q_already_scaned = q.recognized
+    except:
+        message = {"message": "not valid event", "code": 1004}
+        return Response(message)
     
-    q = Invitee.objects.get(email=qr_email, unique_id=qr_unique_id, event=og_event)
-
-    q_in_event_exists = True if q.event == og_event else False 
-
-    q_already_scaned = q.recognized
     
     try:
         if q_in_event_exists and int(event_pk) == int(qr_event_primary_key):                
             
         
             if q_already_scaned:
-                message = {"message": "Scanned Again", "code": "1000"}
+                message = {"message": "Scanned Again", "code": 1000}
+                return Response(message)
             else:
                
                 q.recognized = True
@@ -201,11 +212,94 @@ def scan(request, event_pk=None):
                 og_event.save()
                 
                 message = {"message": {"qrcode":qr_name, "qr_email":qr_email, "qr_phone_number":qr_phone_number, "event_pk":og_event.pk, "qr_unique_id":qr_unique_id}, "code": "1001" }
+                return Response(message)
         else:
             data = "User does not exists in the event"
-            message = {"message": "User does not exists in the event", "code": "1002"}
+            message = {"message": "User does not exists in the event", "code": 1002}
+            return Response(message)
             
     except Exception as e:
-        message = {"message": f"Something Is Wrong either Event or Invitee doesn't exist {e}", "code": "1003"}
-        
+        message = {"message": f"Something Is Wrong either Event or Invitee doesn't exist {e}", "code": 1003}
     return Response(message)
+
+from django.template.loader import render_to_string
+from django.conf import settings
+
+from django.core.mail import EmailMessage
+
+from mimetypes import guess_type
+from os.path import basename
+
+
+@api_view(["GET"])
+def send_email_to_all(request, event_pk):
+    print("heya in the task")
+    user = request.user
+    event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=event_pk, created_by=user)
+    
+    # connection = mail.get_connection()
+    # connection.open()
+    invitees = [i for i in event_instance.invitees.all()]        
+    all_mail = []  
+    for invitee in invitees :
+        invitee.save()
+        if invitee.qr_code:
+            template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college, "unique_id": invitee.unique_id})
+            invitee.sent_email = True
+            invitee.save()
+            subject = "Initation for: " + event_instance.event_name
+            message = template
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [invitee.email]
+       
+            image = invitee.qr_code
+    
+            
+            image.open()
+
+            # email = EmailMessage("sub", "pub", "thakkar.parth782@gmail.com", ["parthishere1234@gmail.com"])
+            email = EmailMessage(subject, message, email_from, recipient_list,)
+            email.attach(basename(image.name),image.read(), guess_type(image.name)[0])
+            email.send(fail_silently=False)
+            all_mail.append(email)
+            image.close()
+            
+       
+  
+    # connection.send_messages(all_mail)
+    # connection.close()
+    return None
+        
+    
+@api_view(["GET"]) 
+@login_required
+def send_email_to_remaining(request, event_pk):
+    
+    user = request.user
+    event_instance = Event.objects.exclude(removed=True).prefetch_related("invitees").get(pk=event_pk, created_by=user)
+    
+    invitees = event_instance.invitees.all()
+    # print(participant)
+    
+    for invitee in invitees :
+        if invitee.qr_code and not invitee.sent_email:
+            template = render_to_string('app/email_template.html', {'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
+            invitee.sent_email = True
+            invitee.save()
+            subject = "Initation for: " + event_instance.event_name
+            message = template
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = [invitee.email,]
+            mail = EmailMessage(subject, message, email_from, recipient_list)
+            mail.attach(invitee.qr_code.name, invitee.qr_code.read())
+            mail.send()
+       
+    # group_name = get_user_name()  # Find out way to get same as what is printed on connect()
+
+    # channel_layer = get_channel_layer()
+    # # Trigger reload message sent to group
+    # async_to_sync(channel_layer.group_send)(
+    #     group_name,
+    #     {'type': 'reload_page'}
+    # )
+    return None

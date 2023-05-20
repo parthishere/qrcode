@@ -37,7 +37,7 @@ class Event(models.Model):
     moderators = models.ManyToManyField(User, blank=True, related_name="events_as_moderator")
     event_name = models.CharField(max_length=100)
     event_date = models.DateTimeField(default=now)
-    venue = models.CharField(max_length=120, null=True)
+    venue = models.CharField(max_length=200, null=True)
     about = models.TextField(null=True)
     contact_number = models.IntegerField(default="999999999")
     contact_email = models.EmailField(default="info@allevents.com")

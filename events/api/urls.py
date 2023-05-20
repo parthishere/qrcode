@@ -12,5 +12,7 @@ urlpatterns = [
     path("events/<int:event_pk>/invitees/<int:pk>", InviteeRetriveUpdateAPIView.as_view(), name="invitee-detail"),
     path("events/<int:event_pk>/invitees/bulk-create", InviteeBulkCreateAPI.as_view(), name="invitee-detail"),
     
-    # path("scan/")
+    path("scan/"),
+    path("email/<int:event_pk>/all", email_to_all),
+    path("email/<int:event_pk>/remaining", email_to_all),
 ]
