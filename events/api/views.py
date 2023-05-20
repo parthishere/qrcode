@@ -268,7 +268,8 @@ def send_email_to_all(request, event_pk):
   
     # connection.send_messages(all_mail)
     # connection.close()
-    return None
+    message = {"message": "done", "code": 200}
+    return Response(message)
         
     
 @api_view(["GET"]) 
@@ -302,4 +303,5 @@ def send_email_to_remaining(request, event_pk):
     #     group_name,
     #     {'type': 'reload_page'}
     # )
-    return None
+    message = {"message": "done", "code": 200}
+    return Response(message)

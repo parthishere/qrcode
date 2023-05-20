@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import EventListCreateAPI, EventRetriveUpdateAPIView, InviteeBulkCreateAPI, InviteeRetriveUpdateAPIView, InviteeListCreateListAPI
+from .views import EventListCreateAPI, EventRetriveUpdateAPIView, InviteeBulkCreateAPI, InviteeRetriveUpdateAPIView, InviteeListCreateListAPI, send_email_to_all, send_email_to_remaining, scan
 
 
 app_name = "events-api"
@@ -12,7 +12,7 @@ urlpatterns = [
     path("events/<int:event_pk>/invitees/<int:pk>", InviteeRetriveUpdateAPIView.as_view(), name="invitee-detail"),
     path("events/<int:event_pk>/invitees/bulk-create", InviteeBulkCreateAPI.as_view(), name="invitee-detail"),
     
-    path("scan/"),
-    path("email/<int:event_pk>/all", email_to_all),
-    path("email/<int:event_pk>/remaining", email_to_all),
+    path("scan/>int:event_pk>", scan),
+    path("email/<int:event_pk>/all", send_email_to_all),
+    path("email/<int:event_pk>/remaining", send_email_to_remaining),
 ]
