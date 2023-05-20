@@ -39,7 +39,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    'qrscan.up.railway.app'
+    'https://qrscan.up.railway.app'
 ]
 
 CORS_ORIGIN_ALLOW_ALL = True
