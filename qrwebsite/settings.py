@@ -39,11 +39,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = [
-    '*',
+    'https://qrscan.up.railway.app',
+    "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = True # If this is used then `CORS_ALLOWED_ORIGINS` will not have any effect
 CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOW_HEADERS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
@@ -58,6 +61,7 @@ INSTALLED_APPS = [
     "rest_framework.authtoken",
     'dj_rest_auth',
     
+    'corsheaders',
     "storages",
     'allauth',
     'allauth.account',
@@ -80,6 +84,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
