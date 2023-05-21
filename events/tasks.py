@@ -8,6 +8,7 @@ from celery import shared_task
 from django.template.loader import render_to_string
 
 from django.core.mail import EmailMessage, send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
 from django.core import mail
 from django.conf import settings
 from qrwebsite.celery import app
@@ -33,12 +34,18 @@ def send_email_to_all(extra_fields, request, event_pk):
     invitees = [i for i in event_instance.invitees.all()]   
     total_count = event_instance.invitees.all().count()     
     all_mail = []  
+    htmly   = get_template('app/email_template.html')
     for invitee in invitees :
         
         invitee.save()
         if invitee.qr_code:
             boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
-            template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url})
+            
+            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
+            
+            html_content = htmly.render(context)
+            
+            template = render_to_string('app/email_template.html', context)
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
@@ -52,7 +59,8 @@ def send_email_to_all(extra_fields, request, event_pk):
             image.open()
 
             # email = EmailMessage("sub", "pub", "thakkar.parth782@gmail.com", ["parthishere1234@gmail.com"])
-            email = EmailMessage(subject, message, email_from, recipient_list,)
+            email = EmailMultiAlternatives(subject, message, email_from, recipient_list,)
+            email.attach_alternative(html_content, "text/html")
             email.attach(basename(image.name),image.read(), guess_type(image.name)[0])
             email.send(fail_silently=False)
             all_mail.append(email)
@@ -74,20 +82,35 @@ def send_email_to_remaining(extra_fields, request, event_pk):
     
     invitees = event_instance.invitees.all()
     # print(participant)
-   
+    htmly   = get_template('app/email_template.html')
     for invitee in invitees :
         if invitee.qr_code and not invitee.sent_email:
             boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
-            template = render_to_string('app/email_template.html', {"extra_fields":extra_fields, 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college, "fileurl":boto_s3_url})
+            
+            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
+            
+            html_content = htmly.render(context)
+            
+            template = render_to_string('app/email_template.html', context)
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
             message = template
             email_from = settings.EMAIL_HOST_USER
-            recipient_list = [invitee.email,]
-            mail = EmailMessage(subject, message, email_from, recipient_list)
-            mail.attach(invitee.qr_code.name, invitee.qr_code.read())
-            mail.send()
+            recipient_list = [invitee.email]
+       
+            image = invitee.qr_code
+    
+            
+            image.open()
+
+            # email = EmailMessage("sub", "pub", "thakkar.parth782@gmail.com", ["parthishere1234@gmail.com"])
+            email = EmailMultiAlternatives(subject, message, email_from, recipient_list,)
+            email.attach_alternative(html_content, "text/html")
+            email.attach(basename(image.name),image.read(), guess_type(image.name)[0])
+            email.send(fail_silently=False)
+            
+            image.close()
             print("email sent to "+ invitee.name +" on email: "+ invitee.email + " count :", invitees.index(invitee)+1)
     # group_name = get_user_name()  # Find out way to get same as what is printed on connect()
 
