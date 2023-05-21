@@ -195,7 +195,8 @@ def scan(request, event_pk=None):
         q_in_event_exists = True if q.event == og_event else False 
 
         q_already_scaned = q.recognized
-    except:
+    except Exception as e:
+        print(e)
         message = {"message": "not valid event", "code": 1004}
         return Response(message)
     
