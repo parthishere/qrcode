@@ -188,7 +188,7 @@ def scan(request, event_pk=None):
         return Response(message)
     
     try:
-        og_event = Event.objects.prefetch_related("recognized_invitees").get(pk=event_pk, created_by=request.user)
+        og_event = Event.objects.prefetch_related("recognized_invitees").get(pk=event_pk)
         
         q = Invitee.objects.get(email=qr_email, unique_id=qr_unique_id, event=og_event)
 

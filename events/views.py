@@ -186,14 +186,15 @@ def bulk_create(request, pk=None):
             for extra in non_important_features:
                 dict[features[extra]] = li[extra]
             extra = json.dumps(extra)
-            if li[name_index] and li[email_index] and li[name_index] != "":
+            if li[name_index] and li[email_index] and li[name_index] != "none":
                 print(li[name_index])
                 objs.append(Invitee(created_by=user, event=event_instance, name=li[name_index], email=li[email_index], other_info=extra ,phone_number=0, unique_id=random_string_generator(size=12)))
         
-        # Invitee.objects.filter(event=event_instance).delete()
+        event_instance.invitees.clear()
+        Invitee.objects.filter(event=event_instance).delete()
         Invitee.objects.bulk_create(objs)
         qs = Invitee.objects.filter(event=event_instance)
-        # event_instance.invitees.clear()
+        
         event_instance.invitees.add(*qs)
         
         
