@@ -11,6 +11,7 @@ import json
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 
 class EventListCreateAPI(ListCreateAPIView):
     queryset = Event.objects.all()
@@ -149,7 +150,8 @@ class delete_all_invitees(APIView):
             
   
 @api_view(["POST"]) 
-@login_required         
+@login_required   
+@csrf_exempt   
 def scan(request, event_pk=None):
     """
     
