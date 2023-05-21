@@ -111,7 +111,7 @@ def send_email_to_remaining(extra_fields, request, event_pk):
             email.send(fail_silently=False)
             
             image.close()
-            print("email sent to "+ invitee.name +" on email: "+ invitee.email + " count :", invitees.index(invitee)+1)
+            print("email sent to "+ invitee.name +" on email: "+ invitee.email)
     # group_name = get_user_name()  # Find out way to get same as what is printed on connect()
 
     # channel_layer = get_channel_layer()
