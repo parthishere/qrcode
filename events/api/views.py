@@ -172,13 +172,15 @@ def scan(request, event_pk=None):
     
     
     """
+    
     try:
-        data = json.dumps(request.body)
+        data = json.loads(request.body)
         string = data["found_string"]
         qr_name, qr_email, qr_phone_number, qr_event_primary_key, qr_unique_id = string.split(',')[0], string.split(',')[1], string.split(',')[2], string.split(',')[3], string.split(',')[4]
         
         
-    except:
+    except Exception as e:
+        print(e)
         print("will not recognize")
         data = "Not valid QR"
         message = {"message": "not valid QR", "code": 1004}
