@@ -168,11 +168,11 @@ def bulk_create(request, pk=None):
         name_index = features.index("name")
         email_index = features.index("email")
 
-        try:
-            phonenumber_index = features.index("phonenumber")
-            features.pop(phonenumber_index)
-        except:
-            phonenumber_index = 0
+        # try:
+        #     phonenumber_index = features.index("phonenumber")
+        #     features.pop(phonenumber_index)
+        # except:
+        #     phonenumber_index = 0
         features.pop(name_index)
         features.pop(email_index)
         non_important_features = []
@@ -186,7 +186,9 @@ def bulk_create(request, pk=None):
             for extra in non_important_features:
                 dict[features[extra]] = li[extra]
             extra = json.dumps(extra)
-            objs.append(Invitee(created_by=user, event=event_instance, name=li[name_index], email=li[email_index], phone_number=li[phonenumber_index] if phonenumber_index else 00000000, other_info=extra ,unique_id=random_string_generator(size=12)))
+            if li[name_index] and li[email_index] and li[name_index] != "":
+                print(li[name_index])
+                objs.append(Invitee(created_by=user, event=event_instance, name=li[name_index], email=li[email_index], other_info=extra ,phone_number=0, unique_id=random_string_generator(size=12)))
         
         # Invitee.objects.filter(event=event_instance).delete()
         Invitee.objects.bulk_create(objs)

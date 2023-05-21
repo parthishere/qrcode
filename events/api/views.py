@@ -149,8 +149,7 @@ class delete_all_invitees(APIView):
             return Response({"data":"not same user", "error":1, "code":4000})
             
   
-@api_view(["POST"]) 
-@login_required   
+@api_view(["POST"])  
 @csrf_exempt   
 def scan(request, event_pk=None):
     """
