@@ -197,7 +197,7 @@ def scan(request, event_pk=None):
         q_already_scaned = q.recognized
     except Exception as e:
         print(e)
-        message = {"message": "not valid event", "code": 1004}
+        message = {"message": "not valid event or invitee", "code": 1004}
         return Response(message)
     
     
