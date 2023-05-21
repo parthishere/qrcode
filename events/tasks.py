@@ -18,6 +18,9 @@ User = get_user_model()
 from mimetypes import guess_type
 from os.path import basename
 
+from django.core.files.storage import get_storage_class
+
+media_storage = get_storage_class()()
 
 @app.task
 def send_email_to_all(extra_fields, request, event_pk):
@@ -34,7 +37,8 @@ def send_email_to_all(extra_fields, request, event_pk):
         
         invitee.save()
         if invitee.qr_code:
-            template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
+            boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
+            template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url})
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
@@ -70,10 +74,11 @@ def send_email_to_remaining(extra_fields, request, event_pk):
     
     invitees = event_instance.invitees.all()
     # print(participant)
-    
+   
     for invitee in invitees :
         if invitee.qr_code and not invitee.sent_email:
-            template = render_to_string('app/email_template.html', {"extra_fields":extra_fields, 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
+            boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
+            template = render_to_string('app/email_template.html', {"extra_fields":extra_fields, 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college, "fileurl":boto_s3_url})
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
@@ -83,7 +88,7 @@ def send_email_to_remaining(extra_fields, request, event_pk):
             mail = EmailMessage(subject, message, email_from, recipient_list)
             mail.attach(invitee.qr_code.name, invitee.qr_code.read())
             mail.send()
-       
+            print("email sent to "+ invitee.name +" on email: "+ invitee.email + " count :", invitees.index(invitee)+1)
     # group_name = get_user_name()  # Find out way to get same as what is printed on connect()
 
     # channel_layer = get_channel_layer()
