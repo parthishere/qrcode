@@ -27,9 +27,11 @@ def send_email_to_all(extra_fields, request, event_pk):
     
     # connection = mail.get_connection()
     # connection.open()
-    invitees = [i for i in event_instance.invitees.all()]        
+    invitees = [i for i in event_instance.invitees.all()]   
+    total_count = event_instance.invitees.all().count()     
     all_mail = []  
     for invitee in invitees :
+        
         invitee.save()
         if invitee.qr_code:
             template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
@@ -51,6 +53,7 @@ def send_email_to_all(extra_fields, request, event_pk):
             email.send(fail_silently=False)
             all_mail.append(email)
             image.close()
+            print("email sent to "+ invitee.name +" on email: "+ invitee.email + " count :", invitees.index(invitee)+1, " total count: ", total_count)
             
        
   

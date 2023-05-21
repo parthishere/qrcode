@@ -57,7 +57,6 @@ class Invitee(models.Model):
             self.qr_code.delete()
         except:
             pass
-            print("cannot remopved")
         
         str = f"{self.name},{self.email},{self.phone_number},{self.event.pk},{self.unique_id}"
         qr_image = qrcode.make(str)
@@ -78,7 +77,6 @@ class Invitee(models.Model):
 
     
 def invitee_pre_save_receiver(sender, instance, *args, **kwargs):
-    print("hello")
     if instance.unique_id == None or instance.unique_id == "" or instance.pk=="" or instance.pk==None:
         print("ohk")
         instance.unique_id = unique_id_generator(instance)
