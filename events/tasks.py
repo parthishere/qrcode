@@ -34,18 +34,18 @@ def send_email_to_all(extra_fields, request, event_pk):
     invitees = [i for i in event_instance.invitees.all()]   
     total_count = event_instance.invitees.all().count()     
     all_mail = []  
-    htmly   = get_template('app/email_template.html')
+    htmly   = get_template('scan/email_template.html')
     for invitee in invitees :
         
         invitee.save()
         if invitee.qr_code:
             boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
             
-            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
+            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
             
             html_content = htmly.render(context)
             
-            template = render_to_string('app/email_template.html', context)
+            template = render_to_string('scan/email_template.html', context)
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
@@ -82,16 +82,16 @@ def send_email_to_remaining(extra_fields, request, event_pk):
     
     invitees = event_instance.invitees.all()
     # print(participant)
-    htmly   = get_template('app/email_template.html')
+    htmly   = get_template('scan/email_template.html')
     for invitee in invitees :
         if invitee.qr_code and not invitee.sent_email:
             boto_s3_url = media_storage.url(name=invitee.qr_code.file.name)
             
-            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
+            context = {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "about":event_instance.about, "created_by":event_instance.created_by, "fileurl":boto_s3_url}
             
             html_content = htmly.render(context)
             
-            template = render_to_string('app/email_template.html', context)
+            template = render_to_string('scan/email_template.html', context)
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name

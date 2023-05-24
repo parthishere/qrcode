@@ -9,7 +9,6 @@ from django.db.models.signals import pre_save, post_save
 
 import random
 import string
-import accounts.models
 
 
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits + string.ascii_uppercase):
@@ -36,8 +35,7 @@ class Event(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
     moderators = models.ManyToManyField(User, blank=True, related_name="events_as_moderator")
     event_name = models.CharField(max_length=100)
-    event_date = models.DateTimeField(default=now)
-    venue = models.CharField(max_length=200, null=True)
+    
     about = models.TextField(null=True)
     contact_number = models.IntegerField(default="999999999")
     contact_email = models.EmailField(default="info@allevents.com")
@@ -45,14 +43,14 @@ class Event(models.Model):
     contact_email_2 = models.EmailField(null=True, blank=True)
     instance_created_date = models.DateTimeField(auto_now=True)
     updated_date = models.DateTimeField(auto_now_add=True)
-    invitees = models.ManyToManyField("accounts.Invitee", blank=True, related_name="all_events")
-    recognized_invitees = models.ManyToManyField("accounts.Invitee", blank=True, related_name="attended_all_events")
+    # invitees = models.ManyToManyField("invitee.Invitee", blank=True, related_name="all_events")
+    recognized_invitees = models.ManyToManyField("invitee.Invitee", blank=True, related_name="attended_all_events")
     fast_check = models.BooleanField(default=True)
     pass_template = models.ImageField(upload_to=f"media/{created_by}/events/", null=True, blank=True)
-    name_coordinates = models.BooleanField(default=False)
-    event_coordinates = models.BooleanField(default=False)
-    qr_code_coordinates = models.TextField()
-    name_coordinates = models.TextField()
+    qr_code_coordinate_x = models.FloatField(null=True)
+    qr_code_coordinate_y = models.FloatField(null=True)
+    name_coordinate_x = models.FloatField(null=True)
+    name_coordinate_y = models.FloatField(null=True)
     pre_define_pass =models.BooleanField(default=False)
     predefined_pass_image = models.ImageField(null=True, blank=True)
     event_update_count = models.IntegerField(default=0)

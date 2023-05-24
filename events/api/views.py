@@ -3,7 +3,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from ..models import Event
-from accounts.models import Invitee
+from invitee.models import Invitee
 from .serializers import EventSerializer, BulkCreateSerializer, InviteeSerializer
 from rest_framework.permissions import IsAuthenticated
 import openpyxl
@@ -248,7 +248,7 @@ def send_email_to_all(request, event_pk):
     for invitee in invitees :
         invitee.save()
         if invitee.qr_code:
-            template = render_to_string('app/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college, "unique_id": invitee.unique_id})
+            template = render_to_string('invitee/email_template.html', {"extra_fields":''.join(random.choice(string.ascii_lowercase + string.digits + string.ascii_uppercase) for _ in range(10)), 'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college, "unique_id": invitee.unique_id})
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name
@@ -288,7 +288,7 @@ def send_email_to_remaining(request, event_pk):
     
     for invitee in invitees :
         if invitee.qr_code and not invitee.sent_email:
-            template = render_to_string('app/email_template.html', {'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
+            template = render_to_string('invitee/email_template.html', {'name': invitee.name, 'email':invitee.email, 'phone_number':invitee.phone_number, "event_name":event_instance.event_name, "event_date":event_instance.event_date, "about":event_instance.about, "created_by":event_instance.created_by, "organization_or_college":event_instance.organization_or_college})
             invitee.sent_email = True
             invitee.save()
             subject = "Initation for: " + event_instance.event_name

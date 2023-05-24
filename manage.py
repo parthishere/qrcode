@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "qrwebsite.settings")
+
+import django
+django.setup()
+
+import os
 import sys
 
 

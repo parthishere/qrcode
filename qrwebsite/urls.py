@@ -34,10 +34,10 @@ urlpatterns = [
     
     path('dj-rest-auth/', include('dj_rest_auth.urls')),
     
-    path('', include('app.urls', namespace='app')),
+    path('', include('scan.urls', namespace='scan')),
      
     path('events/', include('events.urls', namespace='events')),
-    path('users/', include('accounts.urls', namespace='accounts')),
+    path('users/', include('invitee.urls', namespace='invitee')),
     
     path('api/', include('events.api.urls', namespace='events-api'))
 ]

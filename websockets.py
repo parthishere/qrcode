@@ -15,7 +15,7 @@ import socket
 import base64
 from events.models import Event
 import cv2
-from accounts.models import Invitee
+from invitee.models import Invitee
 from pyzbar.pyzbar import decode
 # from channels.db import database_sync_to_async
 

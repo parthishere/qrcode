@@ -1,6 +1,6 @@
 {% load static %}
 <nav class="navbar sticky-top fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'app:event-home' %}">
+    <a class="navbar-brand" href="{% url 'scan:event-home' %}">
     <img src="{% static 'images/favicon.png' %%}" width="30" height="30" class="d-inline-block align-center" alt="">
      <span class="navbar-brand mb-0 h1">ScanUP</span></a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -16,7 +16,7 @@
           <a class="nav-link" href="{% url 'events:create' %}">Create Event</a>
         </li>
         <li class="nav-item">
-          {% comment %} <a class="nav-link" href="{% url 'app:scan' %}">Scan</a> {% endcomment %}
+          {% comment %} <a class="nav-link" href="{% url 'scan:scan' %}">Scan</a> {% endcomment %}
         </li>
         
          

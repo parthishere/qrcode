@@ -1,5 +1,5 @@
 from django import forms
-from accounts.models import Invitee
+from invitee.models import Invitee
 from django.core.exceptions import ValidationError
 from events.models import Event
 
@@ -10,7 +10,7 @@ class DateTimePickerInput(forms.DateTimeInput):
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ("event_name", "event_date", "about", "contact_number","contact_number_2","venue", "contact_email","contact_email_2", "fast_check", "pre_define_pass", "predefined_pass_image")
+        fields = ("event_name", "about", "contact_number","contact_number_2", "contact_email","contact_email_2", "fast_check", "pre_define_pass", "predefined_pass_image")
         
         widgets = {
                 'event_date' : DateTimePickerInput(),

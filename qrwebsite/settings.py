@@ -73,8 +73,10 @@ INSTALLED_APPS = [
     "django_celery_results",
     'django_celery_beat',
     
-    "accounts",
-    'app',
+    "invitee",
+    "fest",
+    "datePrice",
+    'scan',
     "customuser",
     "events",
     "passtemplates",
@@ -130,18 +132,23 @@ WSGI_APPLICATION = 'qrwebsite.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': os.environ['DATABASE_NAME'],
+#         'HOST': os.environ['DATABASE_HOST'],
+#         'PORT': os.environ['DATABASE_PORT'],
+#         'USER': os.environ['DATABASE_USER'],
+#         'PASSWORD': os.environ['DATABASE_PASSWORD'],
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ['DATABASE_NAME'],
-        'HOST': os.environ['DATABASE_HOST'],
-        'PORT': os.environ['DATABASE_PORT'],
-        'USER': os.environ['DATABASE_USER'],
-        'PASSWORD': os.environ['DATABASE_PASSWORD'],
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

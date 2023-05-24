@@ -14,11 +14,11 @@
     <a href="{% url "events:see-all-reconized-participant" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">See Recognized Ivitees of Event</button></a>
     <a href="{% url "events:see-all-unreconized-participant" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">See Unrecognized Ivitees of Event</button></a>
 
-    <a href="{% url "app:send-email" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">Email the participant</button></a>
+    <a href="{% url "scan:send-email" pk=event_detail.pk %}"> <button class="btn btn-info btn-sm">Email the participant</button></a>
     <br>
     <br>
     <center>
-    <a href="{% url 'app:scan' pk=event_detail.pk %}"><button class="button-64" role="button"><span class="text">Scan</span></button></a>
+    <a href="{% url 'scan:scan' pk=event_detail.pk %}"><button class="button-64" role="button"><span class="text">Scan</span></button></a>
     </center>
     <br>
     <br>

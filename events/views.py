@@ -4,7 +4,7 @@ from django.urls import reverse
 from events.forms import EventForm, FileForm, InviteeForm
 
 from events.models import Event
-from accounts.models import Invitee
+from invitee.models import Invitee
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import openpyxl
