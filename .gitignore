@@ -3,3 +3,4 @@ __pycache__/
 *.pyc
 dockerfile_not_docker
 docker-compose.yml
+dockerfile

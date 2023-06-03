@@ -41,7 +41,7 @@ class EventRetriveUpdateAPIView(RetrieveUpdateDestroyAPIView):
         
     def perform_destroy(self, instance):
         if self.request.user == instance.created_by:
-            instance.delete()
+            instance.removed = True
         
         
             
@@ -58,6 +58,7 @@ class InviteeListCreateListAPI(APIView):
         queryset = self.get_queryset().filter(event__invitee=user)
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+    
     
 class InviteeRetriveUpdateAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Invitee.objects.all()
@@ -100,7 +101,7 @@ class InviteeBulkCreateAPI(CreateAPIView):
                     excel_data.append(row_data)
                     
                 features = excel_data.pop(0)
-            
+                
                 name_index = features.index("name")
                 email_index = features.index("email")
 
@@ -127,7 +128,7 @@ class InviteeBulkCreateAPI(CreateAPIView):
                 # Invitee.objects.filter(event=event_instance).delete()
                 Invitee.objects.bulk_create(objs)
                 qs = Invitee.objects.filter(event=event_instance)
-                # event_instance.invitees.clear()
+                event_instance.invitees.clear()
                 event_instance.invitees.add(*qs)
                 event_instance.save()
                 return Response({"data":"added sucsessfully", "error":0, "code":2000})
@@ -150,7 +151,8 @@ class delete_all_invitees(APIView):
             
   
 @api_view(["POST"])  
-@csrf_exempt   
+@csrf_exempt  
+@login_required 
 def scan(request, event_pk=None):
     """
     
@@ -188,6 +190,7 @@ def scan(request, event_pk=None):
         return Response(message)
     
     try:
+        # user = request.user
         og_event = Event.objects.prefetch_related("recognized_invitees").get(pk=event_pk)
         
         q = Invitee.objects.get(email=qr_email, unique_id=qr_unique_id, event=og_event)
@@ -195,6 +198,7 @@ def scan(request, event_pk=None):
         q_in_event_exists = True if q.event == og_event else False 
 
         q_already_scaned = q.recognized
+        
     except Exception as e:
         print(e)
         message = {"message": "not valid event or invitee", "code": 1004}
