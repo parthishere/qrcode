@@ -32,7 +32,7 @@ class CustomUser(AbstractUser):
     is_pro = models.BooleanField(default=False)
     phonenumber = models.IntegerField(default=9999999)
     is_updated = models.BooleanField(default=False)
-    unique_id = models.CharField(max_length=12, default="kq1q2uponr2")
+    unique_id = models.CharField(max_length=12, null=True, blank=True)
     
 
 def customuser_pre_save_receiver(sender, instance, *args, **kwargs):

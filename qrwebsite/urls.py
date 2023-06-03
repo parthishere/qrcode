@@ -22,6 +22,11 @@ urlpatterns = [
     path('admin/', admin.site.urls ,name='admin'),
     path('accounts/', include('allauth.urls')),
     
+    path('', include('scan.urls', namespace='scan')),
+    path('events/', include('events.urls', namespace='events')),
+    path('users/', include('invitee.urls', namespace='invitee')),
+    
+    
     path('schema/', get_schema_view(
         title="API",
         description="API for the qr App",
@@ -31,13 +36,11 @@ urlpatterns = [
         title="API",
         description="API for the qr App",
     ), name="qr-docs"),
+    path('api/accounts/', include('dj_rest_auth.urls')),
+    path('api/event/', include('events.api.urls', namespace='events-api')),
+    path('api/invitee/', include('invitee.api.urls', namespace='invitee-api')),
+    # path('api/fest', include('fest.api.urls', namespace='fest-api')),
+    path('api/scan/', include('scan.api.urls', namespace='scan-api')),
     
-    path('dj-rest-auth/', include('dj_rest_auth.urls')),
     
-    path('', include('scan.urls', namespace='scan')),
-     
-    path('events/', include('events.urls', namespace='events')),
-    path('users/', include('invitee.urls', namespace='invitee')),
-    
-    path('api/', include('events.api.urls', namespace='events-api'))
 ]
