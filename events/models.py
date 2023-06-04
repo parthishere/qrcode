@@ -34,7 +34,7 @@ def unique_id_generator(instance):
 class Event(models.Model):
     unique_id = models.CharField(max_length=20)
     organization_or_college = models.CharField(max_length=120, null=True,blank=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="events", blank=True, null=True)
     moderators = models.ManyToManyField(User, blank=True, related_name="events_as_moderator")
     event_name = models.CharField(max_length=100)
     

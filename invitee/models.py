@@ -34,13 +34,13 @@ class Invitee(models.Model):
     updated_on = models.DateTimeField(auto_now_add=True)
     name = models.CharField(max_length=100)
     unique_id = models.CharField(max_length=100, blank=True)
-    # event = models.ForeignKey("events.Event", on_delete=models.CASCADE, null=True, related_name="event_invitees")
+    event = models.ForeignKey("events.Event", on_delete=models.CASCADE, null=True, related_name="event_invitees")
     email = models.EmailField()
-    phone_number = models.BigIntegerField()
-    other_info = models.TextField()
+    phone_number = models.BigIntegerField(null=True, blank=True)
+    other_info = models.TextField(null=True, blank=True)
     recognized = models.BooleanField(default=False)
     qr_code = models.ImageField(upload_to=f"media/invitees/", blank=True)
-    pass_template = models.ImageField(upload_to=f"media/{created_by}/invitees_pass/", blank=True)
+    pass_template = models.ImageField(upload_to=f"media/{created_by}/invitees_pass/", null=True,blank=True)
     sent_email = models.BooleanField(default=False)
     
     def __str__(self):
@@ -52,7 +52,11 @@ class Invitee(models.Model):
             self.qr_code.delete(save=False)
         except:
             pass
-
+        
+        if self.unique_id == None or self.unique_id == "" or self.pk=="" or self.pk==None:
+            print("ohk")
+            self.unique_id = unique_id_generator(self)
+        
         if not self.qr_code:
             # Generate QR code if it doesn't exist
             data_to_encode = f"{self.name},{self.email},{self.phone_number},{self.event.pk},{self.unique_id}"

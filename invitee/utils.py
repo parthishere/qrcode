@@ -19,29 +19,29 @@ def generate_qrcode(data, filename):
     
     
     
-    background_image = cv2.imread('background_image.jpg')
+    # background_image = cv2.imread('background_image.jpg')
 
-    data_to_encode = "hehe"
-    qr_code = qrcode.make(data_to_encode)
+    # data_to_encode = "hehe"
+    # qr_code = qrcode.make(data_to_encode)
 
  
-    qr_code_image = cv2.cvtColor(np.array(qr_code), cv2.COLOR_RGB2BGR)
+    # qr_code_image = cv2.cvtColor(np.array(qr_code), cv2.COLOR_RGB2BGR)
 
-    qr_code_x = 100
-    qr_code_y = 200
+    # qr_code_x = 100
+    # qr_code_y = 200
 
-    overlay_image(background_image, qr_code_image, qr_code_x, qr_code_y)
+    # overlay_image(background_image, qr_code_image, qr_code_x, qr_code_y)
 
    
-    name = "Parth thakkar"
-    name_x = 100
-    name_y = 250
-    max_width = 10
+    # name = "Parth thakkar"
+    # name_x = 100
+    # name_y = 250
+    # max_width = 10
     
-    overlay_text(background_image, name, name_x, name_y, max_width)
+    # overlay_text(background_image, name, name_x, name_y, max_width)
 
 
-    cv2.imwrite('result_image.jpg', background_image)
+    # cv2.imwrite('result_image.jpg', background_image)
     
     buffer = BytesIO()
     image.save(buffer, format='PNG')

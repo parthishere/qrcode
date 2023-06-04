@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 import openpyxl
+from rest_framework import status
 from .serializers import BulkCreateSerializer, InviteeSerializer
 from events.models import Event
 import json
@@ -14,15 +15,54 @@ class InviteeListCreateListAPI(APIView):
     queryset = Invitee.objects.all()
     serializer_class = InviteeSerializer
     permission_classes = [IsAuthenticated]
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     filterset_fields = ['recognized', 'sent_email', "created_by"]
-    search_fields = ["user__username", 'name', 'phone_number', 'unique_id', "email"]
+    search_fields = ["user__username", 'name', 'phone_number', 'unique_id', "name"]
+    ordering_fields = ['name', 'name', "unique_id"]
+    
+    def get_queryset(self):
+        queryset = Invitee.objects.all()
+
+        # Apply the filters
+        queryset = self.filter_queryset(queryset)
+
+        # Apply ordering
+        queryset = self.order_queryset(queryset)
+
+        return queryset
+
+    def filter_queryset(self, queryset):
+        for backend in self.filter_backends:
+            queryset = backend().filter_queryset(self.request, queryset, self)
+        return queryset
+
+    def order_queryset(self, queryset):
+        ordering = self.request.query_params.get('ordering', None)
+        if ordering:
+            fields = [field.strip() for field in ordering.split(',')]
+            return queryset.order_by(*fields)
+        return queryset
     
     def get(self, request, event_pk):
-        user = request.user
-        queryset = self.get_queryset().filter(event__invitee=user)
+        queryset = self.get_queryset().filter(event_id=event_pk)
+
+        # Perform search if search query parameter is provided
+        search_query = request.query_params.get('search', None)
+        if search_query:
+            search_backend = filters.SearchFilter()
+            queryset = search_backend.filter_queryset(request, queryset, self)
+
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
+    
+    def post(self, request, event_pk):
+        serializer = self.serializer_class(data=request.data)
+        user = request.user
+        event = Event.objects.prefetch_related("created_by").get(pk=event_pk)
+        if serializer.is_valid() and event.created_by == user:
+            serializer.save(created_by=request.user, event=event)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 
 class InviteeRetriveUpdateAPIView(RetrieveUpdateDestroyAPIView):
