@@ -17,7 +17,7 @@ class EventDetailSerializer(serializers.ModelSerializer):
     class Meta():
         model = Event
         fields = ("__all__")
-        # depth = 1
+        read_only_fields = ("event_update_count", "removed", "recognized_invitees")
 
 class EventUpdateFestPk(serializers.ModelSerializer):
     class Meta():

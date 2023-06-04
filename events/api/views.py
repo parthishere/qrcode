@@ -67,11 +67,13 @@ class EventRetriveUpdateAPIView(RetrieveUpdateDestroyAPIView):
     
     
     def perform_update(self, serializer):
-        instance = serializer.save(created_by=self.request.user)
+        if self.request.user == serializer.created_by:
+            instance = serializer.save(created_by=self.request.user)
         
     def perform_destroy(self, instance):
         if self.request.user == instance.created_by:
             instance.removed = True
+            instance.save()
      
 @api_view(["POST"])   
 def event_update_festPk(request):
