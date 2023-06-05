@@ -5,7 +5,7 @@ from .views import EventListCreateAPI, EventRetriveUpdateAPIView, send_email_to_
 app_name = "events-api"
 
 urlpatterns = [
-    path("list", EventListCreateAPI.as_view(), name="event-list"),
+    path("list/<str:org_name>", EventListCreateAPI.as_view(), name="event-list"),
     path("<int:pk>", EventRetriveUpdateAPIView.as_view(), name="event-detail"),
      
     path("email/<int:event_pk>/all", send_email_to_all),

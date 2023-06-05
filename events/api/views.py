@@ -26,14 +26,14 @@ class EventListCreateAPI(ListCreateAPIView):
     queryset = Event.objects.all()
     serializer_class = EventSerializer
     permission_classes = [IsAuthenticated,]
-    lookup_field = ['pk']
-    lookup_url_kwarg = ['pk']
+    lookup_field = ['created_by__username']
+    lookup_url_kwarg = ['org_name']
     
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
     
     def list(self, request):
-        eventqueryset = self.get_queryset().filter(created_by=request.user, fest=None).exclude(removed=True)
+        eventqueryset = self.get_queryset().filter(created_by=request.user.pk, fest=None).exclude(removed=True)
         e_serializer = EventSerializer(eventqueryset, many=True).data
         
         fest_queryset = FestModel.objects.filter(user=request.user)
@@ -92,8 +92,6 @@ def event_update_festPk(request):
         
     return Response({"error":0, "data":"ok"})
     
-
-
 
 
 @api_view(["GET"])
