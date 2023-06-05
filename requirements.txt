@@ -55,7 +55,8 @@ matplotlib==3.7.1
 numpy==1.21.6
 oauthlib==3.2.1
 odfpy==1.4.1
-opencv-python==4.5.5.64
+# opencv-python==4.5.5.64
+opencv-python-headless
 openpyxl==3.0.9
 packaging==23.1
 pandas==2.0.1
